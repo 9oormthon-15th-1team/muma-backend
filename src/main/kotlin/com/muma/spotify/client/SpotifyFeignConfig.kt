@@ -8,8 +8,5 @@ import org.springframework.context.annotation.Configuration
 class SpotifyFeignConfig {
 
     @Bean
-    fun spotifyAuthInterceptor(interceptor: SpotifyAuthInterceptor) = interceptor
-
-    @Bean
     fun feignLoggerLevel(): Logger.Level = Logger.Level.BASIC
 }
