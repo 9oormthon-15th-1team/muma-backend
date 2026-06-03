@@ -5,8 +5,11 @@ import org.springframework.retry.RetryContext
 import org.springframework.retry.backoff.BackOffContext
 import org.springframework.retry.backoff.BackOffPolicy
 import org.springframework.retry.backoff.ExponentialBackOffPolicy
+import kotlin.random.Random
 
-class RetryAfterAwareBackoffPolicy : BackOffPolicy {
+class RetryAfterAwareBackoffPolicy(
+    private val jitterMaxMs: Long = 500,
+) : BackOffPolicy {
 
     private val fallback = ExponentialBackOffPolicy().apply {
         initialInterval = 1000
@@ -28,7 +31,8 @@ class RetryAfterAwareBackoffPolicy : BackOffPolicy {
                 ?.value?.firstOrNull()?.toLongOrNull()
 
             if (retryAfterSeconds != null) {
-                Thread.sleep(retryAfterSeconds * 1000)
+                val jitter = Random.nextLong(jitterMaxMs)
+                Thread.sleep(retryAfterSeconds * 1000 + jitter)
                 return
             }
         }
