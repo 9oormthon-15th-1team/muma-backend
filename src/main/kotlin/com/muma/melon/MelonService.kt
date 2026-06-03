@@ -15,6 +15,12 @@ class MelonService(
     private val searchStrategies: List<SpotifySearchStrategy> = listOf(
         SpotifySearchStrategy { title, artists -> spotifySearchAdapter.searchTracks(title, artists) },
         SpotifySearchStrategy { title, _ -> spotifySearchAdapter.searchTracks(title, "") },
+        // 제목 끝의 괄호 부분을 제거하고 앞 부분만 검색 (예: "니가 나라면 (Feat. 유회승)" → "니가 나라면")
+        SpotifySearchStrategy { title, _ ->
+            val strippedTitle = title.replace(Regex("\\s*\\([^)]*\\)$"), "").trim()
+            if (strippedTitle == title) emptyList()
+            else spotifySearchAdapter.searchTracks(strippedTitle, "")
+        },
     )
 
     private val filterStrategies: List<SpotifyTrackFilterStrategy> = listOf(
