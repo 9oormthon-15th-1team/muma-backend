@@ -17,5 +17,5 @@ management:
 
 spotify:
   base-url: https://api.spotify.com/v1
-  client-id: ${SPOTIFY_CLIENT_ID:}
-  client-secret: ${SPOTIFY_CLIENT_SECRET:}
+  client-id: ${SPOTIFY_CLIENT_ID}
+  client-secret: ${SPOTIFY_CLIENT_SECRET}
