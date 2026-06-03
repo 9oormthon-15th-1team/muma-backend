@@ -1,6 +1,7 @@
 package com.muma.spotify
 
 import feign.FeignException
+import mu.KLogging
 import org.springframework.retry.RetryContext
 import org.springframework.retry.backoff.BackOffContext
 import org.springframework.retry.backoff.BackOffPolicy
@@ -32,13 +33,17 @@ class RetryAfterAwareBackoffPolicy(
 
             if (retryAfterSeconds != null) {
                 val jitter = Random.nextLong(jitterMaxMs)
-                Thread.sleep(retryAfterSeconds * 1000 + jitter)
+                val sleepMs = retryAfterSeconds * 1000 + jitter
+                logger.warn { "Spotify 429 - Retry-After: ${retryAfterSeconds}s, jitter: ${jitter}ms, 대기 후 재시도 (${sleepMs}ms)" }
+                Thread.sleep(sleepMs)
                 return
             }
         }
 
         fallback.backOff(ctx.fallbackContext)
     }
+
+    companion object : KLogging()
 
     private class Context(
         val retryContext: RetryContext,
