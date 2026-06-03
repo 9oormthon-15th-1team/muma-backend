@@ -1,6 +1,7 @@
 package com.muma.csv
 
 import mu.KLogging
+import org.apache.commons.csv.CSVFormat
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -8,21 +9,23 @@ import org.springframework.web.multipart.MultipartFile
 class CsvService {
 
     fun logTitles(file: MultipartFile) {
-        val reader = file.inputStream.bufferedReader()
-        val headers = reader.readLine()
-            ?.split(",")
-            ?.map { it.trim() }
-            ?: return
+        val format = CSVFormat.DEFAULT.builder()
+            .setHeader()
+            .setSkipHeaderRecord(true)
+            .setTrim(true)
+            .build()
 
-        val titleIndex = headers.indexOf("title")
-        if (titleIndex == -1) {
-            logger.warn { "CSV에 title 컬럼이 없습니다." }
-            return
-        }
+        val records = format.parse(file.inputStream.bufferedReader())
+        val headers = records.headerNames
 
-        reader.forEachLine { line ->
-            val value = line.split(",").getOrNull(titleIndex)?.trim()
-            logger.info { "title: $value" }
+        if ("title" !in headers) logger.warn { "CSV에 title 컬럼이 없습니다." }
+        if ("artists" !in headers) logger.warn { "CSV에 artists 컬럼이 없습니다." }
+        if ("title" !in headers && "artists" !in headers) return
+
+        for (record in records) {
+            val title = if ("title" in headers) record["title"] else null
+            val artists = if ("artists" in headers) record["artists"] else null
+            logger.info { "title: $title, artists: $artists" }
         }
     }
 
