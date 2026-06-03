@@ -1,6 +1,8 @@
 spring:
   application:
     name: muma-backend
+  jpa:
+    open-in-view: false
 
 management:
   server:
