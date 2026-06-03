@@ -12,6 +12,11 @@ import org.springframework.web.util.ContentCachingResponseWrapper
 @Component
 class AccessLogFilter : OncePerRequestFilter() {
 
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val uri = request.requestURI
+        return EXCLUDED_PREFIXES.any { uri.startsWith(it) }
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -44,5 +49,12 @@ class AccessLogFilter : OncePerRequestFilter() {
         logger.info(message)
     }
 
-    companion object : KLogging()
+    companion object : KLogging() {
+        private val EXCLUDED_PREFIXES = listOf(
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/swagger-resources",
+            "/webjars",
+        )
+    }
 }
