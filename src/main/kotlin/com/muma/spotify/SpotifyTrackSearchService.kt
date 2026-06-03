@@ -1,18 +1,14 @@
 package com.muma.spotify
 
-import com.muma.spotify.client.SpotifyClient
+import com.muma.spotify.dto.SpotifyTrack
 import org.springframework.stereotype.Service
 
 @Service
 class SpotifyTrackSearchService(
-    private val spotifyClient: SpotifyClient,
+    private val spotifySearchAdapter: SpotifySearchAdapter,
 ) {
 
-    fun searchTrackIds(title: String, artists: String): List<String> {
-        val response = spotifyClient.search(
-            query = "track:$title artist:$artists",
-            type = "track",
-        )
-        return response.tracks?.items?.map { it.id } ?: emptyList()
+    fun searchTracks(title: String, artists: String): List<SpotifyTrack> {
+        return spotifySearchAdapter.searchTracks(title, artists)
     }
 }

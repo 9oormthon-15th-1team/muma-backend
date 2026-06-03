@@ -34,6 +34,8 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+	implementation("org.springframework.retry:spring-retry")
+	implementation("org.springframework.boot:spring-boot-starter-aop")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("org.apache.commons:commons-csv:1.12.0")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
@@ -41,6 +43,7 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

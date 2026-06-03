@@ -1,0 +1,4 @@
+GET {{baseUrl}}/me/playlists
+Content-Type: application/json
+Authorization: Bearer {{spotifyToken}}
+

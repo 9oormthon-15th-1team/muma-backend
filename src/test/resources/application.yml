@@ -1,0 +1,4 @@
+spotify:
+  base-url: https://api.spotify.com/v1
+  client-id: test-client-id
+  client-secret: test-client-secret
