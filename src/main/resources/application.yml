@@ -2,6 +2,17 @@ spring:
   application:
     name: muma-backend
 
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,env
+  endpoint:
+    health:
+      show-details: always
+
 spotify:
   base-url: https://api.spotify.com/v1
   client-id: ${SPOTIFY_CLIENT_ID:}
