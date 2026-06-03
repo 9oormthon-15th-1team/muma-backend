@@ -1,6 +1,8 @@
 package com.muma.melon
 
 import com.muma.spotify.SpotifySearchAdapter
+import com.muma.spotify.SpotifySearchStrategy
+import com.muma.spotify.dto.SpotifyTrack
 import mu.KLogging
 import org.springframework.stereotype.Service
 
@@ -8,6 +10,11 @@ import org.springframework.stereotype.Service
 class MelonService(
     private val spotifySearchAdapter: SpotifySearchAdapter,
 ) {
+
+    private val searchStrategies: List<SpotifySearchStrategy> = listOf(
+        SpotifySearchStrategy { title, artists -> spotifySearchAdapter.searchTracks(title, artists) },
+        SpotifySearchStrategy { title, _ -> spotifySearchAdapter.searchTracks(title, "") },
+    )
 
     fun preview(tracks: List<MelonTrackRequest>): List<MelonTrackResult> {
         return tracks.map { track ->
@@ -28,9 +35,17 @@ class MelonService(
                 melonAlbumId = track.melonAlbumId,
                 melonLikes = track.melonLikes,
                 melonSongUrl = track.melonSongUrl,
-                results = spotifySearchAdapter.searchTracks(title, artists),
+                results = searchWithFallback(title, artists),
             )
         }
+    }
+
+    private fun searchWithFallback(title: String, artists: String): List<SpotifyTrack> {
+        for (strategy in searchStrategies) {
+            val results = strategy.search(title, artists)
+            if (results.isNotEmpty()) return results
+        }
+        return emptyList()
     }
 
     companion object : KLogging()

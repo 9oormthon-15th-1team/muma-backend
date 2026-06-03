@@ -20,8 +20,9 @@ class SpotifySearchAdapter(
     )
     fun searchTracks(title: String, artists: String, limit: Int = 2): List<SpotifyTrack> {
         logger.debug("Spotify 검색: title=$title, artists=$artists")
+        val query = if (artists.isBlank()) "track:$title" else "track:$title artist:$artists"
         return spotifyClient.search(
-            query = "track:$title artist:$artists",
+            query = query,
             type = "track",
             limit = limit,
         ).tracks?.items?.take(limit) ?: emptyList()
