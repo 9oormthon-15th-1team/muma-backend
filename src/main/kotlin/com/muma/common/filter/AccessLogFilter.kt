@@ -31,16 +31,17 @@ class AccessLogFilter : OncePerRequestFilter() {
     private fun log(request: ContentCachingRequestWrapper, response: ContentCachingResponseWrapper) {
         val requestBody = request.contentAsByteArray.toString(Charsets.UTF_8).trim()
         val responseBody = response.contentAsByteArray.toString(Charsets.UTF_8).trim()
+        val uri = request.requestURI + (request.queryString?.let { "?$it" } ?: "")
 
-        logger.info {
-            """
+        val message = """
             |
-            |>>> ${request.method} ${request.requestURI}${request.queryString?.let { "?$it" } ?: ""}
+            |>>> ${request.method} $uri
             |    Request  : ${requestBody.ifEmpty { "(empty)" }}
             |    Status   : ${response.status}
             |    Response : ${responseBody.ifEmpty { "(empty)" }}
-            """.trimMargin()
-        }
+        """.trimMargin()
+
+        logger.info(message)
     }
 
     companion object : KLogging()
