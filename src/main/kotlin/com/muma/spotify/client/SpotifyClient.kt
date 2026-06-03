@@ -16,7 +16,7 @@ interface SpotifyClient {
     fun search(
         @RequestParam(name = "q") query: String,
         @RequestParam type: String,
-        @RequestParam(required = false) market: String? = null,
+        @RequestParam(required = false) market: String? = "KR",
         @RequestParam(required = false) limit: Int? = null,
         @RequestParam(required = false) offset: Int? = null,
     ): SpotifySearchResponse
