@@ -1,8 +1,10 @@
 package com.muma.spotify.client
 
 import com.muma.spotify.dto.SpotifySearchResponse
+import com.muma.spotify.dto.SpotifyTrack
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 
 @FeignClient(
@@ -20,4 +22,10 @@ interface SpotifyClient {
         @RequestParam(required = false) limit: Int? = null,
         @RequestParam(required = false) offset: Int? = null,
     ): SpotifySearchResponse
+
+    @GetMapping("/tracks/{trackId}")
+    fun getTrack(
+        @PathVariable trackId: String,
+        @RequestParam(required = false) market: String? = null,
+    ): SpotifyTrack
 }
