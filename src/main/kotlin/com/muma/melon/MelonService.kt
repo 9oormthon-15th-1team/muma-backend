@@ -2,6 +2,7 @@ package com.muma.melon
 
 import com.muma.spotify.SpotifySearchAdapter
 import com.muma.spotify.SpotifySearchStrategy
+import com.muma.spotify.SpotifyTrackFilterStrategy
 import com.muma.spotify.dto.SpotifyTrack
 import mu.KLogging
 import org.springframework.stereotype.Service
@@ -14,6 +15,17 @@ class MelonService(
     private val searchStrategies: List<SpotifySearchStrategy> = listOf(
         SpotifySearchStrategy { title, artists -> spotifySearchAdapter.searchTracks(title, artists) },
         SpotifySearchStrategy { title, _ -> spotifySearchAdapter.searchTracks(title, "") },
+    )
+
+    private val filterStrategies: List<SpotifyTrackFilterStrategy> = listOf(
+        // title 과 artists 가 정확히 일치하는 track 이 있으면 첫 번째 일치 항목만 남긴다
+        SpotifyTrackFilterStrategy { tracks, title, artists ->
+            val exactMatch = tracks.firstOrNull { track ->
+                track.name.equals(title, ignoreCase = true) &&
+                    track.artists.joinToString(", ") { it.name }.equals(artists, ignoreCase = true)
+            }
+            if (exactMatch != null) listOf(exactMatch) else tracks
+        },
     )
 
     fun preview(tracks: List<MelonTrackRequest>): List<MelonTrackResult> {
@@ -35,7 +47,7 @@ class MelonService(
                 melonAlbumId = track.melonAlbumId,
                 melonLikes = track.melonLikes,
                 melonSongUrl = track.melonSongUrl,
-                results = searchWithFallback(title, artists),
+                results = searchWithFallback(title, artists).applyFilters(title, artists),
             )
         }
     }
@@ -47,6 +59,9 @@ class MelonService(
         }
         return emptyList()
     }
+
+    private fun List<SpotifyTrack>.applyFilters(title: String, artists: String): List<SpotifyTrack> =
+        filterStrategies.fold(this) { tracks, strategy -> strategy.filter(tracks, title, artists) }
 
     companion object : KLogging()
 }
