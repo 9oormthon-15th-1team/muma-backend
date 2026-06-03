@@ -21,6 +21,12 @@ class MelonService(
             if (strippedTitle == title) emptyList()
             else spotifySearchAdapter.searchTracks(strippedTitle, "")
         },
+        // ':' 뒷부분만 검색 (예: "Saint-Saens : Danse Macabre Op.40" → "Danse Macabre Op.40")
+        SpotifySearchStrategy { title, _ ->
+            val afterColon = title.substringAfter(":", "").trim()
+            if (afterColon.isEmpty()) emptyList()
+            else spotifySearchAdapter.searchTracks(afterColon, "")
+        },
     )
 
     private val filterStrategies: List<SpotifyTrackFilterStrategy> = listOf(
