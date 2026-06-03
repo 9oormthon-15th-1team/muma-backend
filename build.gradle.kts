@@ -35,6 +35,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("org.apache.commons:commons-csv:1.12.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
