@@ -16,7 +16,7 @@ class SpotifySearchAdapter(
     @Retryable(
         retryFor = [FeignException.TooManyRequests::class],
         maxAttempts = 4,
-        backoff = Backoff(delay = 1000, multiplier = 2.0, maxDelay = 8000),
+        backoff = Backoff(delay = 500, multiplier = 2.0, maxDelay = 4000),
     )
     fun searchTracks(title: String, artists: String, limit: Int = 2): List<SpotifyTrack> {
         logger.debug("Spotify 검색: title=$title, artists=$artists")
