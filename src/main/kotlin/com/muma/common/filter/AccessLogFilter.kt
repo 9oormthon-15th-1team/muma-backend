@@ -37,10 +37,14 @@ class AccessLogFilter : OncePerRequestFilter() {
         val requestBody = request.contentAsByteArray.toString(Charsets.UTF_8).trim()
         val responseBody = response.contentAsByteArray.toString(Charsets.UTF_8).trim()
         val uri = request.requestURI + (request.queryString?.let { "?$it" } ?: "")
+        val customHeaders = request.headerNames.toList()
+            .filter { it.startsWith("x-", ignoreCase = true) }
+            .joinToString(", ") { "$it=${request.getHeader(it)}" }
 
         val message = """
             |
             |>>> ${request.method} $uri
+            |    Headers  : ${customHeaders.ifEmpty { "(none)" }}
             |    Request  : ${requestBody.ifEmpty { "(empty)" }}
             |    Status   : ${response.status}
             |    Response : ${responseBody.ifEmpty { "(empty)" }}
