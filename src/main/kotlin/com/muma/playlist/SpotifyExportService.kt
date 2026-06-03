@@ -15,7 +15,7 @@ class SpotifyExportService(
 
         val playlist = spotifyUserClient.createPlaylist(
             bearerToken = bearerToken,
-            request = SpotifyCreatePlaylistRequest(name = request.name),
+            request = SpotifyCreatePlaylistRequest(name = request.playlistName),
         )
 
         if (request.trackIds.isNotEmpty()) {
