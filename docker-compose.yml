@@ -1,5 +1,6 @@
 services:
   muma-backend:
+    image: portholeteam/muma-backend:latest
     build: .
     ports:
       - "8080:8080"
